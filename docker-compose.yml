@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: ankane/pgvector:latest
+    container_name: construction-agent-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-construction_agent}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - construction_agent_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-construction_agent}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  construction_agent_pgdata:
